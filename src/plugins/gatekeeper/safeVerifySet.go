@@ -21,13 +21,14 @@ func (b *safeCallBack) add(userId useridT, chatId chatidT) {
 	b.mu.Unlock()
 }
 func (b *safeCallBack) checkExistAndRemove(userId useridT, chatId chatidT) bool {
-	defer b.mu.Unlock()
 	b.mu.Lock()
 	val := fmt.Sprintf("%d%d", chatId, userId)
 	if b._checkVal(val) {
 		delete(b.set, val)
+		b.mu.Unlock()
 		return true
 	}
+	b.mu.Unlock()
 	return false
 }
 
